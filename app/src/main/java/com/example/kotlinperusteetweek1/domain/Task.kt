@@ -105,8 +105,8 @@ fun main() {
 
     val newTask = Task(
         id = 99,
-        title = "Learn Kotlin",
-        description = "Practice lists and functions",
+        title = "Pelaa peliä",
+        description = "Pelaa peliä jonkin aikaa",
         priority = Priority.HIGH,
         dueDate = LocalDate.now().plusDays(5),
         done = false
