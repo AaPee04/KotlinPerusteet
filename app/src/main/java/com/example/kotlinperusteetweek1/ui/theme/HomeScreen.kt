@@ -1,6 +1,11 @@
 package com.example.kotlinperusteetweek1.ui.theme
 
 import java.time.LocalDate
+import com.example.kotlinperusteetweek1.domain.Priority
+import com.example.kotlinperusteetweek1.domain.addTask
+import com.example.kotlinperusteetweek1.domain.toggleDone
+import com.example.kotlinperusteetweek1.domain.filterByDone
+import com.example.kotlinperusteetweek1.domain.sortByDueDate
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -41,13 +46,20 @@ fun HomeScreen(
         ) {
 
             Button(onClick = {
-                tasks = addTask(
-                    tasks,
-                    )
+                val newTask = Task(
+                    id = tasks.size + 1,
+                    title = "Uusi tehtävä",
+                    description = "Tehtävän kuvaus",
+                    priority = Priority.MEDIUM,
+                    dueDate = LocalDate.now().plusDays(1),
+                    done = false
+                )
 
+                tasks = addTask(tasks, newTask)
             }) {
                 Text("Lisää")
             }
+
 
             Button(onClick = {
                 tasks = filterByDone(tasks, false)
