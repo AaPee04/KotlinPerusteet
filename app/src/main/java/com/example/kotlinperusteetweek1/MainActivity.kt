@@ -82,7 +82,7 @@ fun NameTextField(
 fun HomeScreen() {
     var name by remember { mutableStateOf("") }
     var tasklist by remember { mutableStateOf(mockData) }
-    var showOnlyDone by remember { mutableStateOf(false) } // false = näytetään kaikki
+    var showOnlyDone by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.padding(16.dp)) {
         NameTextField(name = name, onNameChange = { name = it })
