@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Row
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
@@ -23,7 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.kotlinperusteetweek1.domain.Task
 import com.example.kotlinperusteetweek1.domain.addTask
-import com.example.kotlinperusteetweek1.domain.sortTasksByPriority
+import com.example.kotlinperusteetweek1.domain.sortByDueDate
 import com.example.kotlinperusteetweek1.domain.mockData
 import com.example.kotlinperusteetweek1.ui.theme.Kotlinperusteetweek1Theme
 
@@ -86,18 +88,21 @@ fun HomeScreen() {
     var name by remember { mutableStateOf("") }
     var tasklist by remember { mutableStateOf(mockData) }
 
-    Column() {
+    Column {
         NameTextField(
             name = name,
             onNameChange = { name = it }
         )
+
         Text(text = "Tervehdys taas: $name")
-        Spacer(modifier = Modifier.height(height = 16.dp))
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         tasklist.forEach { task ->
             Text(text = "${task.id} - Title: ${task.title}")
         }
 
-        Row() {
+        Row {
             Button(
                 onClick = {
                     val newTask = Task(
@@ -106,22 +111,26 @@ fun HomeScreen() {
                         description = "Description",
                         priority = 1,
                         dueDate = "2023-10-31",
-                        done = false,
-                        )
+                        done = false
+                    )
 
                     tasklist = addTask(tasklist, newTask)
-            },
-            content = {
+                }
+            ) {
                 Text("Lisää uusi task")
             }
-        )
+
             Button(
                 onClick = {
-                    tasklist = tasklist.sortedBy { it.priority }
-                },
+                    tasklist = tasklist.sortedBy { it.dueDate }
 
-                content = { Text("Sort by priority")}
-            )
+                    tasklist = sortByDueDate(tasklist)
+                }
+
+
+            ) {
+                Text("Sort by DueDate")
+            }
         }
     }
 }
