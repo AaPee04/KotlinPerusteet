@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-    
+
 
     HomeScreen()
 }
@@ -91,7 +91,6 @@ fun HomeScreen() {
         Text(text = "Tervehdys taas: $name")
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Suodatettu lista
         val displayedTasks = if (showOnlyDone) filterByDone(tasklist, true) else tasklist
 
         displayedTasks.forEach { task ->
