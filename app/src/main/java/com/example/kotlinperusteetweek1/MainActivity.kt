@@ -98,7 +98,7 @@ fun HomeScreen() {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(vertical = 4.dp)
             ) {
-                Text(text = "${task.id} - ${task.title}")
+                Text(text = "${task.id} - ${task.title} - Deadline ${task.dueDate}")
 
                 Spacer(modifier = Modifier.width(8.dp))
 
@@ -117,7 +117,7 @@ fun HomeScreen() {
                     title = name,
                     description = "Description",
                     priority = 1,
-                    dueDate = "2023-10-31",
+                    dueDate = "2026-1-31",
                     done = false
                 )
                 tasklist = addTask(tasklist, newTask)
