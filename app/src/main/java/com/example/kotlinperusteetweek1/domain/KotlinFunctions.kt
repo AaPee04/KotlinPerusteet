@@ -14,6 +14,12 @@ fun toggleDone(list: List<Task>, taskId: Int): List<Task> {
     }
 }
 
+fun removeTask(list: List<Task>, taskId: Int): List<Task> {
+    return list.filterNot { task ->
+        task.id == taskId
+    }
+}
+
 fun filterByDone(list: List<Task>, done: Boolean): List<Task> {
     return list.filter { it.done == done }
 }

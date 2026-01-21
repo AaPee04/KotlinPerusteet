@@ -1,5 +1,7 @@
 package com.example.kotlinperusteetweek1
 
+import androidx.compose.foundation.layout.*
+import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +24,7 @@ import com.example.kotlinperusteetweek1.domain.Task
 import com.example.kotlinperusteetweek1.domain.addTask
 import com.example.kotlinperusteetweek1.domain.filterByDone
 import com.example.kotlinperusteetweek1.domain.mockData
+import com.example.kotlinperusteetweek1.domain.removeTask
 import com.example.kotlinperusteetweek1.domain.sortByDueDate
 import com.example.kotlinperusteetweek1.domain.toggleDone
 
@@ -46,10 +49,31 @@ fun HomeScreen() {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(vertical = 4.dp)
             ) {
-                Text(text = "${task.title} -Due ${task.dueDate}")
+                Text(
+                    text = "${task.title} - Due ${task.dueDate}",
+                    modifier = Modifier.weight(1f)
+                )
 
-                Button(onClick = { tasklist = toggleDone(tasklist, task.id) }) {
-                    Text(if (task.done) "Tehty" else "Tekemätön")
+                Button(
+                    onClick = { tasklist = toggleDone(tasklist, task.id) },
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = if (task.done) "Tehty" else "Tekemätön",
+                        fontSize = 12.sp
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(4.dp))
+
+                Button(
+                    onClick = { tasklist = removeTask(tasklist, task.id) },
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = "Poista",
+                        fontSize = 12.sp
+                    )
                 }
             }
         }
