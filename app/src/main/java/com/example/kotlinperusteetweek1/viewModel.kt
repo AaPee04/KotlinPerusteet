@@ -8,7 +8,7 @@ import com.example.kotlinperusteetweek1.domain.*
 
 class TaskViewModel : ViewModel() {
 
-    var tasks by mutableStateOf<List<Task>>(emptyList())
+    var tasks by mutableStateOf<List<Task>>(mockData)
         private set
 
     init {
@@ -16,22 +16,24 @@ class TaskViewModel : ViewModel() {
     }
 
     fun addTask(task: Task) {
-        tasks = addTask(tasks, task )
+        tasks = tasks + task
     }
 
     fun toggleDone(id: Int) {
-        tasks = toggleDone (tasks, id)
+        tasks = tasks.map {
+            if (it.id == id) it.copy(done = !it.done) else it
+        }
     }
 
     fun removeTask(id: Int) {
         tasks = tasks.filterNot { it.id == id }
     }
 
-    fun filterByDone(done: Boolean): List<Task> {
+    fun getTasksByDone(done: Boolean): List<Task> {
         return filterByDone(tasks, done)
     }
 
-    fun sortByDueDate() {
+    fun sortTasksByDueDate() {
         tasks = sortByDueDate(tasks)
     }
 }

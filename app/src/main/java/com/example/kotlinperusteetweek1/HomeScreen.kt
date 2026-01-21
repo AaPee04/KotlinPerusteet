@@ -1,112 +1,120 @@
 package com.example.kotlinperusteetweek1
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kotlinperusteetweek1.domain.Task
-import com.example.kotlinperusteetweek1.domain.addTask
-import com.example.kotlinperusteetweek1.domain.filterByDone
-import com.example.kotlinperusteetweek1.domain.mockData
-import com.example.kotlinperusteetweek1.domain.removeTask
-import com.example.kotlinperusteetweek1.domain.sortByDueDate
-import com.example.kotlinperusteetweek1.domain.toggleDone
 
-@Preview(showBackground = true)
 @Composable
-fun HomeScreen() {
-    var name by remember { mutableStateOf("") }
-    var tasklist by remember { mutableStateOf(mockData) }
-    var showOnlyDone by remember { mutableStateOf(false) }
+fun HomeScreen(
+    viewModel: TaskViewModel = viewModel()
+) {
+    var newTaskTitle by remember { mutableStateOf("") }
+    var showDoneOnly by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.padding(16.dp)) {
-        NameTextField(name = name, onNameChange = { name = it })
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Tervehdys taas: $name")
-        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            TextField(
+                value = newTaskTitle,
+                onValueChange = { newTaskTitle = it },
+                label = { Text("Uusi tehtävä") },
+                modifier = Modifier.weight(1f)
+            )
 
-        val displayedTasks = if (showOnlyDone) filterByDone(tasklist, true) else tasklist
+            Spacer(modifier = Modifier.width(8.dp))
 
-        displayedTasks.forEach { task ->
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(vertical = 4.dp)
+            Button(
+                onClick = {
+                    if (newTaskTitle.isNotBlank()) {
+                        viewModel.addTask(
+                            Task(
+                                id = viewModel.tasks.size + 1,
+                                title = newTaskTitle,
+                                description = "",
+                                priority = 1,
+                                dueDate = "2026.1.31",
+                                done = false
+                            )
+                        )
+                        newTaskTitle = ""
+                    }
+                }
             ) {
-                Text(
-                    text = "${task.title} - Due ${task.dueDate}",
-                    modifier = Modifier.weight(1f)
-                )
-
-                Button(
-                    onClick = { tasklist = toggleDone(tasklist, task.id) },
-                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
-                ) {
-                    Text(
-                        text = if (task.done) "Tehty" else "Tekemätön",
-                        fontSize = 12.sp
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(4.dp))
-
-                Button(
-                    onClick = { tasklist = removeTask(tasklist, task.id) },
-                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
-                ) {
-                    Text(
-                        text = "Poista",
-                        fontSize = 12.sp
-                    )
-                }
+                Text("Lisää")
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Button(onClick = {
-                val newTask = Task(
-                    id = tasklist.size + 1,
-                    title = name,
-                    description = "Description",
-                    priority = 1,
-                    dueDate = "2026.1.31",
-                    done = false
-                )
-                tasklist = addTask(tasklist, newTask)
-            }) {
-                Text("Uusi task")
-            }
-
-            Button(onClick = { tasklist = sortByDueDate(tasklist) }) {
-                Text("DueDate sort")
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Button(
+                onClick = { showDoneOnly = !showDoneOnly }
+            ) {
+                Text(if (showDoneOnly) "Näytä kaikki" else "Näytä valmiit")
             }
 
             Button(
-                onClick = { showOnlyDone = !showOnlyDone },
-                modifier = Modifier.widthIn(min = 80.dp, max = 120.dp)
+                onClick = { viewModel.sortTasksByDueDate() }
             ) {
-                Text(
-                    text = if (showOnlyDone) "Kaikki" else "Tehdyt",
-                    maxLines = 1
-                )
+                Text("Järjestä eräpäivän mukaan")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        val tasksToShow = if (showDoneOnly) {
+            viewModel.getTasksByDone(true)
+        } else {
+            viewModel.tasks
+        }
+
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(
+                items = tasksToShow,
+                key = { it.id }
+            ) { task ->
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+
+                    Checkbox(
+                        checked = task.done,
+                        onCheckedChange = {
+                            viewModel.toggleDone(task.id)
+                        }
+                    )
+
+                    Text(
+                        text = "${task.title} - ${task.dueDate}",
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    IconButton(
+                        onClick = { viewModel.removeTask(task.id) }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Poista"
+                        )
+                    }
+                }
             }
         }
     }
