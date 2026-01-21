@@ -1,4 +1,4 @@
-package com.example.kotlinperusteetweek1
+package com.example.kotlinperusteetweek1.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.kotlinperusteetweek1.viewModel.TaskViewModel
 import com.example.kotlinperusteetweek1.domain.Task
 
 @Composable

@@ -1,4 +1,4 @@
-package com.example.kotlinperusteetweek1
+package com.example.kotlinperusteetweek1.viewModel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
